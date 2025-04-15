@@ -1,7 +1,12 @@
-import axios from "axios";
 import { useState } from "react";
+import api from "../api/api.js";
 
-export default function AddModal({ showModal, items, updateItem }) {
+export default function AddModal({
+  showModal,
+  items,
+  updateItem,
+  setUpdateItem,
+}) {
   const [item, setItem] = useState(
     updateItem || {
       name: "",
@@ -9,7 +14,6 @@ export default function AddModal({ showModal, items, updateItem }) {
       location: "",
     }
   );
-  const [filterItem, setFilterItem] = useState(null);
 
   const [isAdd, setIsAdd] = useState(Object.is(updateItem, null));
 
@@ -30,7 +34,7 @@ export default function AddModal({ showModal, items, updateItem }) {
         id: id.toString(),
         ...item,
       };
-      await axios.post("http://localhost:9000/posts", finalItem);
+      await api.post("/posts", finalItem);
     } else {
       const afterUpdateItem = {
         id: updateItem.id,
@@ -38,12 +42,14 @@ export default function AddModal({ showModal, items, updateItem }) {
         address: item.address,
         location: item.location,
       };
-      await axios.patch(
-        `http://localhost:9000/posts/${updateItem.id}`,
-        afterUpdateItem
-      );
+      await api.patch(`/posts/${updateItem.id}`, afterUpdateItem);
     }
   };
+
+  function handleCancel() {
+    setUpdateItem(null);
+    showModal(false);
+  }
 
   return (
     <div className="fixed inset-0 flex justify-center items-center z-50 pointer-events-none">
@@ -108,7 +114,7 @@ export default function AddModal({ showModal, items, updateItem }) {
             <button
               type="button"
               className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
-              onClick={() => showModal(false)}
+              onClick={handleCancel}
             >
               Cancel
             </button>

@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "./api/api.js";
 import { useEffect, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -11,7 +11,7 @@ export default function App() {
 
   const handleDeleteItem = async (itemId) => {
     if (confirm("Want to Delete ?")) {
-      await axios.delete(`http://localhost:9000/posts/${itemId}`);
+      await api.delete(`/posts/${itemId}`);
     }
   };
 
@@ -24,7 +24,7 @@ export default function App() {
     let ignore = false;
     const fetchPosts = async () => {
       if (!ignore) {
-        const respose = await axios.get("http://localhost:9000/posts");
+        const respose = await api.get("/posts");
         if (respose && respose.data) {
           setItems(respose.data);
         }
@@ -57,6 +57,7 @@ export default function App() {
             showModal={setShowModal}
             items={items}
             updateItem={updateItem}
+            setUpdateItem = {setUpdateItem}
           />
         )}
       </div>
